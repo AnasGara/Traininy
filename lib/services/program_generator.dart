@@ -15,57 +15,71 @@ class ProgramGenerator {
 
   static List<WorkoutDay> _generateFullBody(int sessions) {
     List<WorkoutDay> program = [];
-    List<Exercise> fullBodyExercises = [
-      Exercise(name: 'Barbell Squat', bodyPart: 'Legs', equipment: 'Barbell', gifUrl: 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHRneGZ4Z3RneGZ4Z3RneGZ4Z3RneGZ4Z3RneGZ4Z3RneGZ4JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/3o7TKMGpxVfFzvZfG0/giphy.gif', target: 'Quads'),
-      Exercise(name: 'Bench Press', bodyPart: 'Chest', equipment: 'Barbell', gifUrl: 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHRneGZ4Z3RneGZ4Z3RneGZ4Z3RneGZ4Z3RneGZ4Z3RneGZ4JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/l0HlS9O5yK8V6zOYo/giphy.gif', target: 'Pectorals'),
-      Exercise(name: 'Bent Over Row', bodyPart: 'Back', equipment: 'Barbell', gifUrl: 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHRneGZ4Z3RneGZ4Z3RneGZ4Z3RneGZ4Z3RneGZ4Z3RneGZ4JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/3o7TKMGpxVfFzvZfG0/giphy.gif', target: 'Lats'),
-      Exercise(name: 'Overhead Press', bodyPart: 'Shoulders', equipment: 'Barbell', gifUrl: '', target: 'Delts'),
+    List<Exercise> fullBodyA = [
+      Exercise(name: 'Barbell Squat', bodyPart: 'Legs', equipment: 'Barbell', gifUrl: 'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/0032/0.jpg', target: 'Quads'),
+      Exercise(name: 'Bench Press', bodyPart: 'Chest', equipment: 'Barbell', gifUrl: 'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/0025/0.jpg', target: 'Pectorals'),
+      Exercise(name: 'Bent Over Row', bodyPart: 'Back', equipment: 'Barbell', gifUrl: 'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/0027/0.jpg', target: 'Lats'),
+      Exercise(name: 'Overhead Press', bodyPart: 'Shoulders', equipment: 'Barbell', gifUrl: 'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/0041/0.jpg', target: 'Delts'),
+      Exercise(name: 'Lying Leg Curls', bodyPart: 'Legs', equipment: 'Machine', gifUrl: 'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/0599/0.jpg', target: 'Hamstrings'),
+    ];
+
+    List<Exercise> fullBodyB = [
+      Exercise(name: 'Deadlift', bodyPart: 'Back', equipment: 'Barbell', gifUrl: 'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/0032/0.jpg', target: 'Glutes'),
+      Exercise(name: 'Incline Dumbbell Press', bodyPart: 'Chest', equipment: 'Dumbbells', gifUrl: 'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/0314/0.jpg', target: 'Pectorals'),
+      Exercise(name: 'Lat Pulldown', bodyPart: 'Back', equipment: 'Cable', gifUrl: 'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/0150/0.jpg', target: 'Lats'),
+      Exercise(name: 'Leg Press', bodyPart: 'Legs', equipment: 'Machine', gifUrl: 'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/0581/0.jpg', target: 'Quads'),
+      Exercise(name: 'Lateral Raises', bodyPart: 'Shoulders', equipment: 'Dumbbells', gifUrl: 'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/0334/0.jpg', target: 'Delts'),
     ];
 
     for (int i = 1; i <= sessions; i++) {
-      program.add(WorkoutDay(dayName: 'Full Body - Session $i', exercises: fullBodyExercises));
+      program.add(WorkoutDay(
+        dayName: 'Full Body ${i % 2 == 1 ? 'A' : 'B'}',
+        exercises: i % 2 == 1 ? fullBodyA : fullBodyB
+      ));
     }
     return program;
   }
 
   static List<WorkoutDay> _generateUpperLower() {
-    List<Exercise> upper = [
-      Exercise(name: 'Bench Press', bodyPart: 'Chest', equipment: 'Barbell', gifUrl: '', target: 'Pectorals'),
-      Exercise(name: 'Pull Ups', bodyPart: 'Back', equipment: 'Bodyweight', gifUrl: '', target: 'Lats'),
-      Exercise(name: 'Dumbbell Press', bodyPart: 'Shoulders', equipment: 'Dumbbells', gifUrl: '', target: 'Delts'),
+    List<Exercise> upperA = [
+      Exercise(name: 'Bench Press', bodyPart: 'Chest', equipment: 'Barbell', gifUrl: 'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/0025/0.jpg', target: 'Pectorals'),
+      Exercise(name: 'Bent Over Row', bodyPart: 'Back', equipment: 'Barbell', gifUrl: 'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/0027/0.jpg', target: 'Lats'),
+      Exercise(name: 'Overhead Press', bodyPart: 'Shoulders', equipment: 'Barbell', gifUrl: 'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/0041/0.jpg', target: 'Delts'),
+      Exercise(name: 'Dips', bodyPart: 'Chest', equipment: 'Bodyweight', gifUrl: 'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/0401/0.jpg', target: 'Triceps'),
     ];
-    List<Exercise> lower = [
-      Exercise(name: 'Squat', bodyPart: 'Legs', equipment: 'Barbell', gifUrl: '', target: 'Quads'),
-      Exercise(name: 'Romanian Deadlift', bodyPart: 'Legs', equipment: 'Barbell', gifUrl: '', target: 'Hamstrings'),
-      Exercise(name: 'Leg Press', bodyPart: 'Legs', equipment: 'Machine', gifUrl: '', target: 'Quads'),
+    List<Exercise> lowerA = [
+      Exercise(name: 'Barbell Squat', bodyPart: 'Legs', equipment: 'Barbell', gifUrl: 'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/0032/0.jpg', target: 'Quads'),
+      Exercise(name: 'Romanian Deadlift', bodyPart: 'Legs', equipment: 'Barbell', gifUrl: 'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/0032/0.jpg', target: 'Hamstrings'),
+      Exercise(name: 'Leg Extensions', bodyPart: 'Legs', equipment: 'Machine', gifUrl: 'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/0585/0.jpg', target: 'Quads'),
+      Exercise(name: 'Standing Calf Raises', bodyPart: 'Legs', equipment: 'Machine', gifUrl: 'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/0751/0.jpg', target: 'Calves'),
     ];
 
     return [
-      WorkoutDay(dayName: 'Upper Body A', exercises: upper),
-      WorkoutDay(dayName: 'Lower Body A', exercises: lower),
-      WorkoutDay(dayName: 'Upper Body B', exercises: upper),
-      WorkoutDay(dayName: 'Lower Body B', exercises: lower),
+      WorkoutDay(dayName: 'Upper Body A', exercises: upperA),
+      WorkoutDay(dayName: 'Lower Body A', exercises: lowerA),
+      WorkoutDay(dayName: 'Upper Body B', exercises: upperA), // Could diversify B later
+      WorkoutDay(dayName: 'Lower Body B', exercises: lowerA),
     ];
   }
 
   static List<WorkoutDay> _generatePPL(int sessions) {
     List<Exercise> push = [
-      Exercise(name: 'Bench Press', bodyPart: 'Chest', equipment: 'Barbell', gifUrl: '', target: 'Pectorals'),
-      Exercise(name: 'Incline Dumbbell Press', bodyPart: 'Chest', equipment: 'Dumbbells', gifUrl: '', target: 'Pectorals'),
-      Exercise(name: 'Side Lateral Raise', bodyPart: 'Shoulders', equipment: 'Dumbbells', gifUrl: '', target: 'Delts'),
-      Exercise(name: 'Triceps Pushdown', bodyPart: 'Arms', equipment: 'Cable', gifUrl: '', target: 'Triceps'),
+      Exercise(name: 'Bench Press', bodyPart: 'Chest', equipment: 'Barbell', gifUrl: 'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/0025/0.jpg', target: 'Pectorals'),
+      Exercise(name: 'Incline Dumbbell Press', bodyPart: 'Chest', equipment: 'Dumbbells', gifUrl: 'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/0314/0.jpg', target: 'Pectorals'),
+      Exercise(name: 'Side Lateral Raise', bodyPart: 'Shoulders', equipment: 'Dumbbells', gifUrl: 'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/0334/0.jpg', target: 'Delts'),
+      Exercise(name: 'Triceps Pushdown', bodyPart: 'Arms', equipment: 'Cable', gifUrl: 'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/0200/0.jpg', target: 'Triceps'),
     ];
     List<Exercise> pull = [
-      Exercise(name: 'Deadlift', bodyPart: 'Back', equipment: 'Barbell', gifUrl: '', target: 'Back'),
-      Exercise(name: 'Lat Pulldown', bodyPart: 'Back', equipment: 'Cable', gifUrl: '', target: 'Lats'),
-      Exercise(name: 'Seated Cable Row', bodyPart: 'Back', equipment: 'Cable', gifUrl: '', target: 'Lats'),
-      Exercise(name: 'Bicep Curls', bodyPart: 'Arms', equipment: 'Dumbbells', gifUrl: '', target: 'Biceps'),
+      Exercise(name: 'Lat Pulldown', bodyPart: 'Back', equipment: 'Cable', gifUrl: 'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/0150/0.jpg', target: 'Lats'),
+      Exercise(name: 'Seated Cable Row', bodyPart: 'Back', equipment: 'Cable', gifUrl: 'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/0180/0.jpg', target: 'Lats'),
+      Exercise(name: 'Face Pulls', bodyPart: 'Back', equipment: 'Cable', gifUrl: 'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/0200/0.jpg', target: 'Rear Delts'),
+      Exercise(name: 'Bicep Curls', bodyPart: 'Arms', equipment: 'Dumbbells', gifUrl: 'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/0294/0.jpg', target: 'Biceps'),
     ];
     List<Exercise> legs = [
-      Exercise(name: 'Barbell Squat', bodyPart: 'Legs', equipment: 'Barbell', gifUrl: '', target: 'Quads'),
-      Exercise(name: 'Leg Press', bodyPart: 'Legs', equipment: 'Machine', gifUrl: '', target: 'Quads'),
-      Exercise(name: 'Leg Curls', bodyPart: 'Legs', equipment: 'Machine', gifUrl: '', target: 'Hamstrings'),
-      Exercise(name: 'Calf Raises', bodyPart: 'Legs', equipment: 'Machine', gifUrl: '', target: 'Calves'),
+      Exercise(name: 'Barbell Squat', bodyPart: 'Legs', equipment: 'Barbell', gifUrl: 'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/0032/0.jpg', target: 'Quads'),
+      Exercise(name: 'Leg Press', bodyPart: 'Legs', equipment: 'Machine', gifUrl: 'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/0581/0.jpg', target: 'Quads'),
+      Exercise(name: 'Leg Curls', bodyPart: 'Legs', equipment: 'Machine', gifUrl: 'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/0599/0.jpg', target: 'Hamstrings'),
+      Exercise(name: 'Calf Raises', bodyPart: 'Legs', equipment: 'Machine', gifUrl: 'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/0751/0.jpg', target: 'Calves'),
     ];
 
     List<WorkoutDay> program = [];

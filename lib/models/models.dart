@@ -43,6 +43,7 @@ class Exercise {
   final String equipment;
   final String gifUrl;
   final String target;
+  final List<String>? instructions;
 
   Exercise({
     this.id,
@@ -51,6 +52,7 @@ class Exercise {
     required this.equipment,
     required this.gifUrl,
     required this.target,
+    this.instructions,
   });
 
   Map<String, dynamic> toMap() {
@@ -61,6 +63,7 @@ class Exercise {
       'equipment': equipment,
       'gifUrl': gifUrl,
       'target': target,
+      'instructions': instructions != null ? jsonEncode(instructions) : null,
     };
   }
 
@@ -72,6 +75,7 @@ class Exercise {
       equipment: map['equipment'],
       gifUrl: map['gifUrl'],
       target: map['target'],
+      instructions: map['instructions'] != null ? (jsonDecode(map['instructions']) as List).cast<String>() : null,
     );
   }
 }
