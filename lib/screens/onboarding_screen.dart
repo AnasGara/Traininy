@@ -29,44 +29,57 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             children: [
               Text('Tell us about yourself', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.blue[900])),
               SizedBox(height: 20),
-              TextFormField(
-                controller: _heightController,
-                decoration: InputDecoration(labelText: 'Height (cm)', border: OutlineInputBorder()),
-                keyboardType: TextInputType.number,
-                validator: (val) => (val == null || double.tryParse(val) == null) ? 'Enter a valid number' : null,
+              _buildCardField(
+                label: 'Height (cm)',
+                child: TextFormField(
+                  controller: _heightController,
+                  decoration: InputDecoration(border: InputBorder.none, hintText: '170'),
+                  keyboardType: TextInputType.number,
+                  validator: (val) => (val == null || double.tryParse(val) == null) ? 'Enter a valid number' : null,
+                ),
               ),
               SizedBox(height: 15),
-              TextFormField(
-                controller: _weightController,
-                decoration: InputDecoration(labelText: 'Weight (kg)', border: OutlineInputBorder()),
-                keyboardType: TextInputType.number,
-                validator: (val) => (val == null || double.tryParse(val) == null) ? 'Enter a valid number' : null,
+              _buildCardField(
+                label: 'Weight (kg)',
+                child: TextFormField(
+                  controller: _weightController,
+                  decoration: InputDecoration(border: InputBorder.none, hintText: '70'),
+                  keyboardType: TextInputType.number,
+                  validator: (val) => (val == null || double.tryParse(val) == null) ? 'Enter a valid number' : null,
+                ),
               ),
               SizedBox(height: 15),
-              DropdownButtonFormField<String>(
-                value: bodyType,
-                items: ['Ectomorph', 'Mesomorph', 'Endomorph', 'Average'].map((t) => DropdownMenuItem(value: t, child: Text(t))).toList(),
-                onChanged: (val) => setState(() => bodyType = val!),
-                decoration: InputDecoration(labelText: 'Body Type', border: OutlineInputBorder()),
+              _buildCardField(
+                label: 'Body Type',
+                child: DropdownButtonFormField<String>(
+                  value: bodyType,
+                  items: ['Ectomorph', 'Mesomorph', 'Endomorph', 'Average'].map((t) => DropdownMenuItem(value: t, child: Text(t))).toList(),
+                  onChanged: (val) => setState(() => bodyType = val!),
+                  decoration: InputDecoration(border: InputBorder.none),
+                ),
               ),
               SizedBox(height: 15),
-              DropdownButtonFormField<String>(
-                value: goal,
-                items: ['Muscle Gain', 'Fat Loss', 'Strength', 'Endurance'].map((t) => DropdownMenuItem(value: t, child: Text(t))).toList(),
-                onChanged: (val) => setState(() => goal = val!),
-                decoration: InputDecoration(labelText: 'Goal', border: OutlineInputBorder()),
+              _buildCardField(
+                label: 'Goal',
+                child: DropdownButtonFormField<String>(
+                  value: goal,
+                  items: ['Muscle Gain', 'Fat Loss', 'Strength', 'Endurance'].map((t) => DropdownMenuItem(value: t, child: Text(t))).toList(),
+                  onChanged: (val) => setState(() => goal = val!),
+                  decoration: InputDecoration(border: InputBorder.none),
+                ),
               ),
               SizedBox(height: 20),
-              Text('How many sessions per week?', style: TextStyle(fontWeight: FontWeight.bold)),
+              Text('How many sessions per week?', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blue[800])),
               Slider(
                 value: sessions.toDouble(),
                 min: 1,
                 max: 7,
+                activeColor: Colors.blue[700],
                 divisions: 6,
                 label: '$sessions sessions',
                 onChanged: (val) => setState(() => sessions = val.toInt()),
               ),
-              Text('$sessions sessions per week'),
+              Text('$sessions sessions per week', style: TextStyle(color: Colors.blue[900])),
               SizedBox(height: 30),
               SizedBox(
                 width: double.infinity,
@@ -79,6 +92,27 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildCardField({required String label, required Widget child}) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: Offset(0, 4))],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(top: 8.0),
+            child: Text(label, style: TextStyle(fontSize: 12, color: Colors.grey[600], fontWeight: FontWeight.bold)),
+          ),
+          child,
+        ],
       ),
     );
   }
