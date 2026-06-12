@@ -1,0 +1,29 @@
+name: traininy
+description: "A new Flutter project."
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.11.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+  provider: ^6.1.2
+  sqflite: ^2.4.1
+  path: ^1.9.1
+  intl: ^0.20.2
+  table_calendar: ^3.1.2
+  fl_chart: ^0.70.2
+  shared_preferences: ^2.3.5
+  http: ^1.6.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
