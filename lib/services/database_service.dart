@@ -89,12 +89,22 @@ class DatabaseService {
 
   Future<void> _seedFoods(Database db) async {
     List<FoodItem> initialFoods = [
-      FoodItem(name: 'Couscous Lamb', calories: 960, protein: 45, carbs: 118, fat: 33, isTunisian: true),
-      FoodItem(name: 'Fricassé', calories: 590, protein: 25, carbs: 56, fat: 28, isTunisian: true),
-      FoodItem(name: 'Lablabi', calories: 600, protein: 30, carbs: 80, fat: 15, isTunisian: true),
-      FoodItem(name: 'Brik Egg', calories: 250, protein: 12, carbs: 15, fat: 18, isTunisian: true),
+      FoodItem(name: 'Couscous Lamb (Plate)', calories: 960, protein: 45, carbs: 118, fat: 33, isTunisian: true),
+      FoodItem(name: 'Fricassé (1 piece)', calories: 295, protein: 12, carbs: 28, fat: 14, isTunisian: true),
+      FoodItem(name: 'Lablabi (Bowl)', calories: 600, protein: 30, carbs: 80, fat: 15, isTunisian: true),
+      FoodItem(name: 'Brik Egg (1 piece)', calories: 250, protein: 12, carbs: 15, fat: 18, isTunisian: true),
+      FoodItem(name: 'Ojja with Merguez', calories: 450, protein: 25, carbs: 10, fat: 35, isTunisian: true),
+      FoodItem(name: 'Slata Mechouia (100g)', calories: 120, protein: 2, carbs: 8, fat: 9, isTunisian: true),
+      FoodItem(name: 'Kafteji (Plate)', calories: 550, protein: 15, carbs: 40, fat: 38, isTunisian: true),
+      FoodItem(name: 'Molokhia with Beef', calories: 500, protein: 40, carbs: 10, fat: 32, isTunisian: true),
+      FoodItem(name: 'Makroudh (1 piece)', calories: 150, protein: 2, carbs: 25, fat: 5, isTunisian: true),
+      FoodItem(name: 'Tajine Tunisian (Slice)', calories: 300, protein: 20, carbs: 10, fat: 20, isTunisian: true),
+      FoodItem(name: 'Assida Zgougou (Cup)', calories: 450, protein: 8, carbs: 60, fat: 20, isTunisian: true),
       FoodItem(name: 'Chicken Breast (100g)', calories: 165, protein: 31, carbs: 0, fat: 3.6),
       FoodItem(name: 'Brown Rice (100g)', calories: 111, protein: 2.6, carbs: 23, fat: 0.9),
+      FoodItem(name: 'Oats (100g)', calories: 389, protein: 16.9, carbs: 66, fat: 6.9),
+      FoodItem(name: 'Egg (Large)', calories: 70, protein: 6, carbs: 0.6, fat: 5),
+      FoodItem(name: 'Olive Oil (1 tbsp)', calories: 119, protein: 0, carbs: 0, fat: 13.5),
     ];
 
     for (var food in initialFoods) {

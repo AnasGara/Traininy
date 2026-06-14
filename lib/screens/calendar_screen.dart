@@ -80,6 +80,10 @@ class _CalendarScreenState extends State<CalendarScreen> {
   }
 
   Widget _buildDayDetails() {
+    if (_calendarFormat == CalendarFormat.week) {
+      return _buildVerticalWeekList();
+    }
+
     if (_selectedDay == null) return Center(child: Text('Select a day'));
     String key = DateFormat('yyyy-MM-dd').format(_selectedDay!);
     WorkoutDay? dayWorkout = _scheduledWorkouts[key];
@@ -90,40 +94,81 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
     return ListView(
       padding: EdgeInsets.all(16),
-      children: [
-        Card(
-          elevation: 4,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      children: [_buildWorkoutCard(dayWorkout)],
+    );
+  }
+
+  Widget _buildVerticalWeekList() {
+    DateTime startOfWeek = _focusedDay.subtract(Duration(days: _focusedDay.weekday - 1));
+    List<DateTime> weekDays = List.generate(7, (index) => startOfWeek.add(Duration(days: index)));
+
+    return ListView.builder(
+      padding: EdgeInsets.all(16),
+      itemCount: 7,
+      itemBuilder: (context, index) {
+        DateTime day = weekDays[index];
+        String key = DateFormat('yyyy-MM-dd').format(day);
+        WorkoutDay? dayWorkout = _scheduledWorkouts[key];
+
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 16.0),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ListTile(
-                title: Text(dayWorkout.dayName, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.blue[900])),
-                subtitle: Text('${dayWorkout.exercises.length} Exercises'),
-                trailing: Checkbox(
-                  value: dayWorkout.isDone,
-                  onChanged: (val) async {
-                    setState(() => dayWorkout.isDone = val!);
-                    await DatabaseService().updateWorkoutDay(dayWorkout);
-                  },
-                ),
+              Text(
+                DateFormat('EEEE, MMM d').format(day),
+                style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blue[800]),
               ),
-              Divider(),
-              ...dayWorkout.exercises.map((ex) => ListTile(
-                dense: true,
-                leading: Icon(Icons.check_circle_outline, color: Colors.blue),
-                title: Text(ex.name),
-                subtitle: Text(ex.target),
-              )).toList(),
-              if (dayWorkout.isDone)
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text('COMPLETED!', style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold)),
-                ),
-              SizedBox(height: 10),
+              SizedBox(height: 8),
+              dayWorkout != null
+                ? _buildWorkoutCard(dayWorkout)
+                : Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Colors.grey[100],
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Text('Rest Day', style: TextStyle(color: Colors.grey[600], fontStyle: FontStyle.italic)),
+                  ),
             ],
           ),
-        )
-      ],
+        );
+      },
+    );
+  }
+
+  Widget _buildWorkoutCard(WorkoutDay dayWorkout) {
+    return Card(
+      elevation: 4,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: ExpansionTile(
+        initiallyExpanded: isSameDay(_selectedDay, DateFormat('yyyy-MM-dd').parse(dayWorkout.date ?? DateFormat('yyyy-MM-dd').format(DateTime.now()))),
+        title: Text(dayWorkout.dayName, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue[900])),
+        subtitle: Text('${dayWorkout.exercises.length} Exercises'),
+        trailing: Checkbox(
+          value: dayWorkout.isDone,
+          onChanged: (val) async {
+            setState(() => dayWorkout.isDone = val!);
+            await DatabaseService().updateWorkoutDay(dayWorkout);
+          },
+        ),
+        children: [
+          Divider(),
+          ...dayWorkout.exercises.map((ex) => ListTile(
+            dense: true,
+            leading: Icon(Icons.fitness_center, size: 18, color: Colors.blue),
+            title: Text(ex.name),
+            subtitle: Text(ex.target),
+          )).toList(),
+          if (dayWorkout.isDone)
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text('COMPLETED!', style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold)),
+            ),
+          SizedBox(height: 10),
+        ],
+      ),
     );
   }
 }

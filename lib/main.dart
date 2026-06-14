@@ -17,8 +17,8 @@ class TraininyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final primaryBlue = Color(0xFF0D47A1);
-    final accentBlue = Color(0xFF1976D2);
+    final primaryBlue = Color(0xFF1565C0);
+    final accentBlue = Color(0xFF03A9F4);
 
     return MaterialApp(
       title: 'Traininy',
@@ -29,13 +29,16 @@ class TraininyApp extends StatelessWidget {
           seedColor: primaryBlue,
           primary: primaryBlue,
           secondary: accentBlue,
+          surface: Colors.white,
+          onPrimary: Colors.white,
         ),
-        scaffoldBackgroundColor: Colors.grey[50],
+        scaffoldBackgroundColor: Color(0xFFF5F9FF),
         appBarTheme: AppBarTheme(
           backgroundColor: primaryBlue,
           foregroundColor: Colors.white,
           centerTitle: true,
-          titleTextStyle: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
+          elevation: 0,
+          titleTextStyle: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),
         ),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
@@ -44,7 +47,7 @@ class TraininyApp extends StatelessWidget {
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           ),
         ),
-        cardTheme: CardTheme(
+        cardTheme: CardThemeData(
           elevation: 2,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         ),
