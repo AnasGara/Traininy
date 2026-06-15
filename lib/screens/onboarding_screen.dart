@@ -13,10 +13,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final PageController _pageController = PageController();
   int _currentPage = 0;
-  final int _totalPages = 5;
+  final int _totalPages = 6;
+  bool _isLoading = false;
 
   final TextEditingController _heightController = TextEditingController(text: '170');
   final TextEditingController _weightController = TextEditingController(text: '70');
+  String _selectedLanguage = 'English';
   String _bodyType = 'Average';
   String _goal = 'Muscle Gain';
   int _sessions = 3;
@@ -37,35 +39,67 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         backgroundColor: Colors.blue[900],
         foregroundColor: Colors.white,
       ),
-      body: Column(
+      body: Stack(
         children: [
-          Expanded(
-            child: PageView(
-              controller: _pageController,
-              onPageChanged: (int page) {
-                setState(() {
-                  _currentPage = page;
-                });
-              },
-              children: [
-                // Page 1 - Welcome
-                _buildWelcomePage(),
+          Column(
+            children: [
+              Expanded(
+                child: PageView(
+                  controller: _pageController,
+                  onPageChanged: (int page) {
+                    setState(() {
+                      _currentPage = page;
+                    });
+                  },
+                  children: [
+                    // Page 1 - Welcome
+                    _buildWelcomePage(),
 
-                // Page 2 - Height & Weight
-                _buildHeightWeightPage(),
+                    // Page 2 - Intro
+                    _buildIntroPage(),
 
-                // Page 3 - Body Type
-                _buildBodyTypePage(),
+                    // Page 3 - Height & Weight
+                    _buildHeightWeightPage(),
 
-                // Page 4 - Goal
-                _buildGoalPage(),
+                    // Page 4 - Body Type
+                    _buildBodyTypePage(),
 
-                // Page 5 - Sessions
-                _buildSessionsPage(),
-              ],
-            ),
+                    // Page 5 - Goal
+                    _buildGoalPage(),
+
+                    // Page 6 - Sessions
+                    _buildSessionsPage(),
+                  ],
+                ),
+              ),
+              _buildBottomNavigation(),
+            ],
           ),
-          _buildBottomNavigation(),
+          if (_isLoading)
+            Positioned.fill(
+              child: Container(
+                color: Colors.black.withOpacity(0.5),
+                child: Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                      ),
+                      const SizedBox(height: 24),
+                      Text(
+                        'Generating your personalized plan...',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
         ],
       ),
     );
@@ -84,21 +118,112 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           ),
           const SizedBox(height: 32),
           Text(
-            'Let\'s create your personalized workout plan!',
+            'Welcome to this app',
             textAlign: TextAlign.center,
             style: TextStyle(
-              fontSize: 24,
+              fontSize: 28,
               fontWeight: FontWeight.bold,
               color: Colors.blue[900],
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 32),
           Text(
-            'Answer a few questions about yourself and we\'ll generate a custom program tailored to your needs.',
+            'Please choose your language',
+            style: TextStyle(
+              fontSize: 18,
+              color: Colors.grey[700],
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          const SizedBox(height: 24),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              _buildLanguageCard('English', 'English'),
+              _buildLanguageCard('Arabic', 'العربية'),
+              _buildLanguageCard('French', 'Français'),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLanguageCard(String language, String label) {
+    bool isSelected = _selectedLanguage == language;
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _selectedLanguage = language;
+        });
+      },
+      child: Container(
+        width: 100,
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        decoration: BoxDecoration(
+          color: isSelected ? Colors.blue[900] : Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: isSelected ? Colors.blue[900]! : Colors.grey[300]!,
+            width: 2,
+          ),
+          boxShadow: [
+            if (isSelected)
+              BoxShadow(
+                color: Colors.blue.withOpacity(0.3),
+                blurRadius: 8,
+                offset: const Offset(0, 4),
+              ),
+          ],
+        ),
+        child: Text(
+          label,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: isSelected ? Colors.white : Colors.blue[900],
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildIntroPage() {
+    return Padding(
+      padding: const EdgeInsets.all(24.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              color: Colors.blue[50],
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              Icons.assignment_ind,
+              size: 100,
+              color: Colors.blue[900],
+            ),
+          ),
+          const SizedBox(height: 48),
+          Text(
+            'Answer these questions to get your personalized plan',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 26,
+              fontWeight: FontWeight.bold,
+              color: Colors.blue[900],
+            ),
+          ),
+          const SizedBox(height: 24),
+          Text(
+            'We will use your answers to tailor the exercises, intensity, and schedule specifically for you.',
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 16,
               color: Colors.grey[600],
+              height: 1.5,
             ),
           ),
         ],
@@ -131,6 +256,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   border: InputBorder.none,
                   hintText: '170',
                   hintStyle: TextStyle(fontSize: 18),
+                  prefixIcon: Icon(Icons.height, color: Color(0xFF1565C0)),
                 ),
                 style: const TextStyle(fontSize: 18),
                 keyboardType: TextInputType.number,
@@ -154,6 +280,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   border: InputBorder.none,
                   hintText: '70',
                   hintStyle: TextStyle(fontSize: 18),
+                  prefixIcon: Icon(Icons.monitor_weight, color: Color(0xFF1565C0)),
                 ),
                 style: const TextStyle(fontSize: 18),
                 keyboardType: TextInputType.number,
@@ -194,54 +321,83 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             style: TextStyle(fontSize: 16, color: Colors.grey[600]),
           ),
           const SizedBox(height: 32),
-          _buildCardField(
-            label: 'Body Type',
-            child: DropdownButtonFormField<String>(
-              value: _bodyType,
-              decoration: const InputDecoration(border: InputBorder.none),
-              style: const TextStyle(fontSize: 18),
-              items: ['Ectomorph', 'Mesomorph', 'Endomorph', 'Average']
-                  .map((type) => DropdownMenuItem(
-                value: type,
-                child: Text(type),
-              ))
-                  .toList(),
-              onChanged: (val) {
-                setState(() {
-                  _bodyType = val!;
-                });
-              },
-            ),
-          ),
-          const SizedBox(height: 24),
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: Colors.blue[50],
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+          Expanded(
+            child: GridView.count(
+              crossAxisCount: 2,
+              crossAxisSpacing: 16,
+              mainAxisSpacing: 16,
+              childAspectRatio: 0.9,
               children: [
-                Text(
-                  '💡 What\'s your body type?',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.blue[900],
-                  ),
+                _buildSelectionCard(
+                  title: 'Ectomorph',
+                  icon: Icons.accessibility,
+                  currentValue: _bodyType,
+                  onTap: () => setState(() => _bodyType = 'Ectomorph'),
                 ),
-                const SizedBox(height: 8),
-                Text(
-                  '• Ectomorph: Lean, slim build\n'
-                      '• Mesomorph: Athletic, muscular build\n'
-                      '• Endomorph: Softer, rounder build\n'
-                      '• Average: Balanced, typical build',
-                  style: TextStyle(fontSize: 14, color: Colors.grey[700]),
+                _buildSelectionCard(
+                  title: 'Mesomorph',
+                  icon: Icons.accessibility_new,
+                  currentValue: _bodyType,
+                  onTap: () => setState(() => _bodyType = 'Mesomorph'),
+                ),
+                _buildSelectionCard(
+                  title: 'Endomorph',
+                  icon: Icons.person,
+                  currentValue: _bodyType,
+                  onTap: () => setState(() => _bodyType = 'Endomorph'),
+                ),
+                _buildSelectionCard(
+                  title: 'Average',
+                  icon: Icons.person_outline,
+                  currentValue: _bodyType,
+                  onTap: () => setState(() => _bodyType = 'Average'),
                 ),
               ],
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildSelectionCard({
+    required String title,
+    required IconData icon,
+    required String currentValue,
+    required VoidCallback onTap,
+  }) {
+    bool isSelected = currentValue == title;
+    return GestureDetector(
+      onTap: onTap,
+      child: Card(
+        color: isSelected ? Colors.blue[900] : Colors.white,
+        elevation: isSelected ? 8 : 2,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+          side: BorderSide(
+            color: isSelected ? Colors.blue[900]! : Colors.transparent,
+            width: 2,
+          ),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              icon,
+              size: 48,
+              color: isSelected ? Colors.white : Colors.blue[900],
+            ),
+            const SizedBox(height: 12),
+            Text(
+              title,
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: isSelected ? Colors.white : Colors.blue[900],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -266,23 +422,38 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             style: TextStyle(fontSize: 16, color: Colors.grey[600]),
           ),
           const SizedBox(height: 32),
-          _buildCardField(
-            label: 'Goal',
-            child: DropdownButtonFormField<String>(
-              value: _goal,
-              decoration: const InputDecoration(border: InputBorder.none),
-              style: const TextStyle(fontSize: 18),
-              items: ['Muscle Gain', 'Fat Loss', 'Strength', 'Endurance']
-                  .map((goal) => DropdownMenuItem(
-                value: goal,
-                child: Text(goal),
-              ))
-                  .toList(),
-              onChanged: (val) {
-                setState(() {
-                  _goal = val!;
-                });
-              },
+          Expanded(
+            child: GridView.count(
+              crossAxisCount: 2,
+              crossAxisSpacing: 16,
+              mainAxisSpacing: 16,
+              childAspectRatio: 0.9,
+              children: [
+                _buildSelectionCard(
+                  title: 'Muscle Gain',
+                  icon: Icons.fitness_center,
+                  currentValue: _goal,
+                  onTap: () => setState(() => _goal = 'Muscle Gain'),
+                ),
+                _buildSelectionCard(
+                  title: 'Fat Loss',
+                  icon: Icons.trending_down,
+                  currentValue: _goal,
+                  onTap: () => setState(() => _goal = 'Fat Loss'),
+                ),
+                _buildSelectionCard(
+                  title: 'Strength',
+                  icon: Icons.bolt,
+                  currentValue: _goal,
+                  onTap: () => setState(() => _goal = 'Strength'),
+                ),
+                _buildSelectionCard(
+                  title: 'Endurance',
+                  icon: Icons.timer,
+                  currentValue: _goal,
+                  onTap: () => setState(() => _goal = 'Endurance'),
+                ),
+              ],
             ),
           ),
         ],
@@ -476,7 +647,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   void _nextPage() {
     // Validate only on the height/weight page
-    if (_currentPage == 1) {
+    if (_currentPage == 2) {
       if (!_formKey.currentState!.validate()) {
         return;
       }
@@ -502,6 +673,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   void _submit() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    // Illusion of treating data
+    await Future.delayed(const Duration(seconds: 5));
+
     // Get values from controllers
     double height = double.tryParse(_heightController.text) ?? 170;
     double weight = double.tryParse(_weightController.text) ?? 70;
