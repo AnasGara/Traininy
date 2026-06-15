@@ -23,69 +23,73 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Profile Setup'),
-        leading: _currentPage > 0
-          ? IconButton(icon: Icon(Icons.arrow_back), onPressed: _prevPage)
-          : null,
-        bottom: PreferredSize(
-          preferredSize: Size.fromHeight(6),
-          child: LinearProgressIndicator(
-            value: (_currentPage + 1) / _totalPages,
-            backgroundColor: Colors.blue[100],
-            valueColor: AlwaysStoppedAnimation<Color>(Colors.blue[900]!),
-          ),
-        ),
-      ),
-      body: PageView(
-        controller: _pageController,
-        physics: NeverScrollableScrollPhysics(),
-        children: [
-          _buildStep(
-            icon: Icons.height,
-            title: 'What is your height?',
-            subtitle: 'This helps us calculate your BMI',
-            child: _buildTextField(_heightController, 'Height in cm'),
-          ),
-          _buildStep(
-            icon: Icons.monitor_weight_outlined,
-            title: 'What is your weight?',
-            subtitle: 'We use this for calorie recommendations',
-            child: _buildTextField(_weightController, 'Weight in kg'),
-          ),
-          _buildStep(
-            icon: Icons.accessibility_new,
-            title: 'Your body type?',
-            subtitle: 'Select the one that describes you best',
-            child: _buildDropdown(
-              value: _bodyType,
-              items: ['Ectomorph', 'Mesomorph', 'Endomorph', 'Average'],
-              onChanged: (val) => setState(() => _bodyType = val!),
-            ),
-          ),
-          _buildStep(
-            icon: Icons.track_changes,
-            title: 'What is your goal?',
-            subtitle: 'We will tailor your program accordingly',
-            child: _buildDropdown(
-              value: _goal,
-              items: ['Muscle Gain', 'Fat Loss', 'Strength', 'Endurance'],
-              onChanged: (val) => setState(() => _goal = val!),
-            ),
-          ),
-          _buildStep(
-            icon: Icons.calendar_month,
-            title: 'Training Frequency?',
-            subtitle: 'How many days per week can you train?',
-            child: Column(
-              children: [
-                Slider(
-                  value: _sessions.toDouble(),
-                  min: 1,
-                  max: 7,
-                  divisions: 6,
-                  label: '$_sessions days',
-                  onChanged: (val) => setState(() => _sessions = val.toInt()),
+      appBar: AppBar(title: Text('Welcome to Traininy')),
+      body: SingleChildScrollView(
+        padding: EdgeInsets.all(16),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              Text('Tell us about yourself', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.blue[900])),
+              SizedBox(height: 20),
+              _buildCardField(
+                label: 'Height (cm)',
+                child: TextFormField(
+                  controller: _heightController,
+                  decoration: InputDecoration(border: InputBorder.none, hintText: '170'),
+                  keyboardType: TextInputType.number,
+                  validator: (val) => (val == null || double.tryParse(val) == null) ? 'Enter a valid number' : null,
+                ),
+              ),
+              SizedBox(height: 15),
+              _buildCardField(
+                label: 'Weight (kg)',
+                child: TextFormField(
+                  controller: _weightController,
+                  decoration: InputDecoration(border: InputBorder.none, hintText: '70'),
+                  keyboardType: TextInputType.number,
+                  validator: (val) => (val == null || double.tryParse(val) == null) ? 'Enter a valid number' : null,
+                ),
+              ),
+              SizedBox(height: 15),
+              _buildCardField(
+                label: 'Body Type',
+                child: DropdownButtonFormField<String>(
+                  value: bodyType,
+                  items: ['Ectomorph', 'Mesomorph', 'Endomorph', 'Average'].map((t) => DropdownMenuItem(value: t, child: Text(t))).toList(),
+                  onChanged: (val) => setState(() => bodyType = val!),
+                  decoration: InputDecoration(border: InputBorder.none),
+                ),
+              ),
+              SizedBox(height: 15),
+              _buildCardField(
+                label: 'Goal',
+                child: DropdownButtonFormField<String>(
+                  value: goal,
+                  items: ['Muscle Gain', 'Fat Loss', 'Strength', 'Endurance'].map((t) => DropdownMenuItem(value: t, child: Text(t))).toList(),
+                  onChanged: (val) => setState(() => goal = val!),
+                  decoration: InputDecoration(border: InputBorder.none),
+                ),
+              ),
+              SizedBox(height: 20),
+              Text('How many sessions per week?', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blue[800])),
+              Slider(
+                value: sessions.toDouble(),
+                min: 1,
+                max: 7,
+                activeColor: Colors.blue[700],
+                divisions: 6,
+                label: '$sessions sessions',
+                onChanged: (val) => setState(() => sessions = val.toInt()),
+              ),
+              Text('$sessions sessions per week', style: TextStyle(color: Colors.blue[900])),
+              SizedBox(height: 30),
+              SizedBox(
+                width: double.infinity,
+                height: 50,
+                child: ElevatedButton(
+                  onPressed: _submit,
+                  child: Text('Generate My Program', style: TextStyle(fontSize: 18)),
                 ),
                 Text('$_sessions days per week', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue[900])),
               ],
@@ -106,23 +110,36 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     );
   }
 
-  Widget _buildStep({required IconData icon, required String title, required String subtitle, required Widget child}) {
-    return Padding(
-      padding: const EdgeInsets.all(24.0),
+  Widget _buildCardField({required String label, required Widget child}) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: Offset(0, 4))],
+      ),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, size: 100, color: Colors.blue[800]),
-          SizedBox(height: 30),
-          Text(title, style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: Colors.blue[900])),
-          SizedBox(height: 10),
-          Text(subtitle, textAlign: TextAlign.center, style: TextStyle(fontSize: 16, color: Colors.grey[600])),
-          SizedBox(height: 40),
+          Padding(
+            padding: const EdgeInsets.only(top: 8.0),
+            child: Text(label, style: TextStyle(fontSize: 12, color: Colors.grey[600], fontWeight: FontWeight.bold)),
+          ),
           child,
         ],
       ),
     );
   }
+
+  void _submit() async {
+    if (_formKey.currentState!.validate()) {
+      User user = User(
+        height: double.parse(_heightController.text),
+        weight: double.parse(_weightController.text),
+        bodyType: bodyType,
+        goal: goal,
+        sessionsPerWeek: sessions,
+      );
 
   Widget _buildTextField(TextEditingController controller, String hint) {
     return Container(
