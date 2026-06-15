@@ -10,12 +10,15 @@ class OnboardingScreen extends StatefulWidget {
 }
 
 class _OnboardingScreenState extends State<OnboardingScreen> {
-  final _formKey = GlobalKey<FormState>();
+  final PageController _pageController = PageController();
+  int _currentPage = 0;
+  final int _totalPages = 5;
+
   final _heightController = TextEditingController(text: '170');
   final _weightController = TextEditingController(text: '70');
-  String bodyType = 'Average';
-  String goal = 'Muscle Gain';
-  int sessions = 3;
+  String _bodyType = 'Average';
+  String _goal = 'Muscle Gain';
+  int _sessions = 3;
 
   @override
   Widget build(BuildContext context) {
@@ -88,8 +91,19 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   onPressed: _submit,
                   child: Text('Generate My Program', style: TextStyle(fontSize: 18)),
                 ),
-              ),
-            ],
+                Text('$_sessions days per week', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue[900])),
+              ],
+            ),
+          ),
+        ],
+      ),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.all(24.0),
+        child: SizedBox(
+          height: 56,
+          child: ElevatedButton(
+            onPressed: _nextPage,
+            child: Text(_currentPage == _totalPages - 1 ? 'Generate Program' : 'Continue', style: TextStyle(fontSize: 18)),
           ),
         ),
       ),
@@ -127,17 +141,83 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         sessionsPerWeek: sessions,
       );
 
-      // Save user profile
-      await DatabaseService().saveUser(user);
+  Widget _buildTextField(TextEditingController controller, String hint) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(15),
+        boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 10)],
+      ),
+      child: TextField(
+        controller: controller,
+        textAlign: TextAlign.center,
+        style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+        keyboardType: TextInputType.number,
+        decoration: InputDecoration(border: InputBorder.none, hintText: hint),
+      ),
+    );
+  }
 
-      // Generate program
-      List<WorkoutDay> program = ProgramGenerator.generateProgram(user);
+  Widget _buildDropdown({required String value, required List<String> items, required Function(String?) onChanged}) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(15),
+        boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 10)],
+      ),
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton<String>(
+          value: value,
+          isExpanded: true,
+          style: TextStyle(fontSize: 20, color: Colors.black, fontWeight: FontWeight.bold),
+          items: items.map((t) => DropdownMenuItem(value: t, child: Text(t))).toList(),
+          onChanged: onChanged,
+        ),
+      ),
+    );
+  }
 
-      // Navigate to preview instead of home
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => ProgramPreviewScreen(program: program)),
-      );
+  void _nextPage() {
+    if (_currentPage < _totalPages - 1) {
+      _pageController.nextPage(duration: Duration(milliseconds: 300), curve: Curves.easeInOut);
+      setState(() => _currentPage++);
+    } else {
+      _submit();
     }
+  }
+
+  void _prevPage() {
+    if (_currentPage > 0) {
+      _pageController.previousPage(duration: Duration(milliseconds: 300), curve: Curves.easeInOut);
+      setState(() => _currentPage--);
+    }
+  }
+
+  void _submit() async {
+    double height = double.tryParse(_heightController.text) ?? 170;
+    double weight = double.tryParse(_weightController.text) ?? 70;
+
+    User user = User(
+      height: height,
+      weight: weight,
+      bodyType: _bodyType,
+      goal: _goal,
+      sessionsPerWeek: _sessions,
+    );
+
+    // Save user profile
+    await DatabaseService().saveUser(user);
+
+    // Generate program
+    List<WorkoutDay> program = ProgramGenerator.generateProgram(user);
+
+    // Navigate to preview instead of home
+    if (!mounted) return;
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => ProgramPreviewScreen(program: program)),
+    );
   }
 }
